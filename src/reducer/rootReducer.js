@@ -21,7 +21,12 @@ export default function rootReducer(state=initialState,action)
             
             state.user[action.payload[0]]=action.payload[1]
             console.log(state.user)
-            return ({cart:state.cart,user:state.user})       
+            return ({cart:state.cart,user:state.user}) 
+        case "CLEAR_CART":
+            
+            state.cart={}
+           // console.log(state.employee)
+            return ({cart:state.cart,user:state.user})           
         default:
             return ({cart:state.cart,user:state.user}) 
 

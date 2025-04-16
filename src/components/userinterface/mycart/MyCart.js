@@ -29,8 +29,9 @@ export default function MyCart({refresh,setRefresh})
 
     const showAddress=()=>{
       
-        return <div>
-          <div>{userData[0].firstname} {userData[0].lastname} </div>
+        return <div style={{fontFamily:'JioType, helvetica, arial, sans-serif',marginTop:25,marginLeft:100,border:'0.5px solid #e2e2e2',borderRadius:20,padding:20,width:'30%'}}>
+          <div style={{fontWeight:'bold',fontSize:18,marginBottom:5}}>Delivery Address</div>
+          <div style={{fontWeight:500,fontSize:16,marginBottom:2}}>{userData[0].firstname} {userData[0].lastname} </div>
           <div>{userData[0].address}</div>
           <div>{userData[0].building},{userData[0].towerno},{userData[0].floorNo}</div>
           <div>House No:{userData[0].houseNo}</div>

@@ -1,6 +1,6 @@
 import Paper from '@mui/material/Paper';
 import {Button } from '@mui/material';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import React from 'react'
 import { MuiOtpInput } from 'mui-one-time-password-input'
 import { useLocation,useNavigate } from 'react-router-dom';
@@ -20,12 +20,19 @@ export default function Otp(){
     const[otp,setOtp]=useState('')
     const location=useLocation()
      const mobileno=location?.state?.phonenumber
+     const genOtp=location?.state?.genOtp
      const navigate=useNavigate()
      const dispatch=useDispatch()
+     
     const handleChange = (newValue) => {
         setOtp(newValue)
       }
     const handleVerify=async()=>{
+if(otp==genOtp)
+{
+
+
+
         var response=await postData('userinterface/check_user_mobileno',{mobileno})
         if(response.status)
         { dispatch({type:"ADD_USER",payload:[response.data.userid,response.data]})
@@ -46,7 +53,11 @@ export default function Otp(){
         {
             navigate("/setup",{state:{mobileno}})
         }
-
+    }
+    else
+    {
+        alert("Invalid Otp....")
+    }
     }
 
     

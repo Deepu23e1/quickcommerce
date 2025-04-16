@@ -28,6 +28,7 @@ import CartDisplayPage from "./components/userinterface/mycart/CartDisplayPage"
 import Login from "./components/userinterface/signin/Login";
 import Otp from "./components/userinterface/signin/Otp";
 import SetUp from "./components/userinterface/signin/SetUp";
+import MakePayment from "./components/userinterface/mycart/MakePayment"
 function App() {
   return (
     <div>
@@ -59,6 +60,7 @@ function App() {
           <Route element={<CartDisplayPage/>} path="/cartdisplaypage"></Route>
           <Route element={<Otp />} path="/otp"></Route>
           <Route element={<SetUp />} path="/setup"></Route>
+          <Route element={<MakePayment/>} path="/makepayment"></Route>
         </Routes>
       </Router>
     </div>

@@ -1,13 +1,15 @@
 import { Divider,Paper,Grid,TextField,Button } from "@mui/material"
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import StepLabel from '@mui/material/StepLabel';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { useSelector,useDispatch } from 'react-redux';
 import { Navigate, useNavigate } from "react-router-dom";
 import { postData } from "../../../services/FetchNodeAdminServices";
+import useRazorpay from "react-razorpay";
+import {serverURL} from "../../../services/FetchNodeAdminServices"
 import Drawer from '@mui/material/Drawer';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import Swal from 'sweetalert2'
@@ -22,6 +24,22 @@ export default function PaymentDetails({refresh,setRefresh}){
     var data =Object.values(cartData) 
     var keys =Object.keys(cartData) 
     var navigate=useNavigate()
+
+    var totalamount=data.reduce((f,s)=>{
+      var ap=0
+          
+       ap=s.price*s.qty
+      return f+ap
+     },0)
+     var discount=data.reduce((f,s)=>{
+      var ap=0
+       if(s.offerprice>0)
+      {
+       ap=(s.price-s.offerprice)*s.qty
+      }
+       
+      return f+ap
+     },0)
 /*** states address */
  const [userId,setUserId]=useState('')
  const [pinCode,setPinCode]=useState('')
@@ -34,18 +52,55 @@ export default function PaymentDetails({refresh,setRefresh}){
  const [city,setCity]=useState('')
  const [state,setState]=useState('')
  const [btnTxt,setBtnTxt]=useState('Place Order')
+/********** */
+const handlePayment= async()=> {
+  const options = {
+ key: "rzp_test_GQ6XaPC6gMPNwH",
+ amount: (totalamount-discount)*100,
+ currency: "INR",
+ name: "QuickCom",
+ description: "Test Transaction",
+ image: `${serverURL}/images/logo.png`,
+
+ handler: (res) => {
+   console.log(res);
+  
+   dispatch({type:'CLEAR_CART',payload:[]})
+   navigate("/Home")
+   
+
+ },
+ prefill: {
+   name: userData?.fullname,
+   email: userData?.emailaddress,
+   contact: userData?.mobileno,
+ },
+ notes: {
+   address: "Razorpay Corporate Office",
+ },
+ theme: {
+   color: "#3399cc",
+ },
+};
+
+var rzp1 = new window.Razorpay(options);
+await rzp1.open();
+}
+useEffect(function(){
+const script = document.createElement("script");
+script.src = "https://checkout.razorpay.com/v1/checkout.js";
+script.async = true;
+document.body.appendChild(script);
+
+},[])
 
 
+
+/*********** */
    
 /**** */
 
 
-    var totalamount=data.reduce((f,s)=>{
-     var ap=0
-         
-      ap=s.price*s.qty
-     return f+ap
-    },0)
 const handleClose=(bool)=>{
   setOpen(bool)
 }
@@ -83,6 +138,10 @@ const handleSubmitAddress=async()=>{
 }
  
   const handlePlaceOrder=async()=>{
+    if(btnTxt=="Make Payment")
+    { handlePayment()}
+    else
+    {
    if(userData.length==0) 
    { 
    navigate('/login')
@@ -104,16 +163,9 @@ const handleSubmitAddress=async()=>{
 
    }
   }
+  }
 
-    var discount=data.reduce((f,s)=>{
-      var ap=0
-       if(s.offerprice>0)
-      {
-       ap=(s.price-s.offerprice)*s.qty
-      }
-       
-      return f+ap
-     },0)
+   
  
  const addressView=()=>{
   return (
